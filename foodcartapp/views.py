@@ -1,6 +1,6 @@
 from django.templatetags.static import static
 from django.http import JsonResponse
-
+import json
 
 from .models import Product
 
@@ -58,5 +58,11 @@ def product_list_api(request):
 
 
 def register_order(request):
-    # TODO это лишь заглушка
+    try:
+        data = json.loads(request.body.decode())
+        print(data)
+    except ValueError:
+        return JsonResponse({
+            'error': 'bla'
+        })
     return JsonResponse({})
