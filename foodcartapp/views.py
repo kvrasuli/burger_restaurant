@@ -59,6 +59,13 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
+    if 'products' not in request.data:
+        return Response({'error': 'products key doesn\'t exist'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not request.data['products']:
+        return Response({'error': 'products are empty'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not isinstance(request.data['products'], list):
+        return Response({'error': 'products are not packed in a list'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
     order = Order.objects.create(
         firstname=request.data['firstname'],
         lastname=request.data['lastname'],
@@ -72,4 +79,5 @@ def register_order(request):
             product=product,
             quantity=order_item['quantity']
         )
+
     return Response({}, status=status.HTTP_201_CREATED)
