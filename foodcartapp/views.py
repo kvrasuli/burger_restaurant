@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 from .models import Product, OrderItem, Order
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -59,21 +60,8 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    if 'products' not in request.data:
-        return Response({'error': 'products key doesn\'t exist'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not request.data['products']:
-        return Response({'error': 'products are empty'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not isinstance(request.data['products'], list):
-        return Response({'error': 'products are not packed in a list'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not all(key in request.data for key in ('firstname', 'lastname', 'phonenumber', 'address')):
-        return Response({'error': 'some of order keys don\'t exist'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not all(isinstance(request.data[key], str) for key in ('firstname', 'lastname', 'phonenumber', 'address')):
-        return Response({'error': 'some of order parameters are not strings'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not all(request.data[key] for key in ('firstname', 'lastname', 'phonenumber', 'address')):
-        return Response({'error': 'some of order parameters are empty'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-    if not all(isinstance(request.data['products'][position][key], int) for key in ('product', 'quantity') for position in range(len(request.data['products']))):
-        return Response({'error': 'wrong product id or quantity'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
     order = Order.objects.create(
         firstname=request.data['firstname'],
         lastname=request.data['lastname'],
@@ -87,5 +75,4 @@ def register_order(request):
             product=product,
             quantity=order_item['quantity']
         )
-
     return Response({}, status=status.HTTP_201_CREATED)
