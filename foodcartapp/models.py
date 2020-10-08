@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Restaurant(models.Model):
@@ -64,3 +66,46 @@ class RestaurantMenuItem(models.Model):
         unique_together = [
             ['restaurant', 'product']
         ]
+
+
+class Order(models.Model):
+    firstname = models.CharField('Имя', max_length=50, db_index=True)
+    lastname = models.CharField('Фамилия', max_length=50, db_index=True)
+    phonenumber = PhoneNumberField(
+        'Номер телефона', db_index=True,
+        help_text='8 800 555 35 35'
+    )
+    address = models.TextField(
+        'Адрес', help_text='ул.Пушкина, д. Колотушкина'
+    )
+
+    def __str__(self):
+        return f'Заказ {self.id}'
+
+    class Meta:
+        verbose_name = 'заказ'
+        verbose_name_plural = 'заказы'
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(
+        Order, verbose_name='Заказ',
+        related_name='items',
+        on_delete=models.CASCADE,
+    )
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE,
+        verbose_name='Продукт',
+        related_name='order_items',
+    )
+    quantity = models.IntegerField(
+        'Количество',
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
+
+    def __str__(self):
+        return f'Позиция {self.product.name} в заказе {self.order.id}'
+
+    class Meta:
+        verbose_name = 'позиция'
+        verbose_name_plural = 'позиции'
