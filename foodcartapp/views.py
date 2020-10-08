@@ -65,6 +65,14 @@ def register_order(request):
         return Response({'error': 'products are empty'}, status=status.HTTP_406_NOT_ACCEPTABLE)
     if not isinstance(request.data['products'], list):
         return Response({'error': 'products are not packed in a list'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not all(key in request.data for key in ('firstname', 'lastname', 'phonenumber', 'address')):
+        return Response({'error': 'some of order keys don\'t exist'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not all(isinstance(request.data[key], str) for key in ('firstname', 'lastname', 'phonenumber', 'address')):
+        return Response({'error': 'some of order parameters are not strings'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not all(request.data[key] for key in ('firstname', 'lastname', 'phonenumber', 'address')):
+        return Response({'error': 'some of order parameters are empty'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+    if not all(isinstance(request.data['products'][position][key], int) for key in ('product', 'quantity') for position in range(len(request.data['products']))):
+        return Response({'error': 'wrong product id or quantity'}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
     order = Order.objects.create(
         firstname=request.data['firstname'],
