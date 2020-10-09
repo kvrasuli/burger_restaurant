@@ -82,6 +82,9 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ {self.id}'
 
+    def get_total_cost(self):
+        return self.items.aggregate(models.Sum('cost'))['cost__sum']
+
     class Meta:
         verbose_name = 'заказ'
         verbose_name_plural = 'заказы'
@@ -102,9 +105,19 @@ class OrderItem(models.Model):
         'Количество',
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
+    cost = models.DecimalField(
+        'Стоимость', max_digits=8, decimal_places=2,
+    )
+
+    def get_cost(self):
+        return self.quantity * self.product.price
+
+    def save(self, *args, **kwargs):
+        self.cost = self.get_cost()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Позиция {self.product.name} в заказе {self.order.id}'
+        return f'{self.product.name} в заказе {self.order.id}'
 
     class Meta:
         verbose_name = 'позиция'

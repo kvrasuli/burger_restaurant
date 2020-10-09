@@ -104,10 +104,16 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    fields = ['product', 'quantity']
+    fields = ['product', 'quantity', 'cost']
+    readonly_fields = ['cost']
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'firstname', 'lastname', 'address', 'phonenumber']
+    list_display = ['id', '_total_cost', 'firstname', 'lastname', 'address', 'phonenumber']
     inlines = [OrderItemInline]
+    ordering = ['id']
+
+    def _total_cost(self, obj):
+        return f'{obj.get_total_cost()} руб.'
+    _total_cost.short_description = 'Сумма заказа'
