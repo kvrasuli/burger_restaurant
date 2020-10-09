@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+from django.utils import timezone
 
 
 class Restaurant(models.Model):
@@ -86,6 +87,9 @@ class Order(models.Model):
     comment = models.TextField(
         'Комментарий', help_text='Плюнуть в бургер', blank=True
     )
+    created_at = models.DateTimeField(default=timezone.now)
+    called_at = models.DateTimeField(null=True, blank=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f'Заказ {self.id}'
