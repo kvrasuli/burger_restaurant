@@ -83,6 +83,9 @@ class Order(models.Model):
         'Статус', max_length=11, default='In progress',
         choices=STATUS_CHOICES,
     )
+    comment = models.TextField(
+        'Комментарий', help_text='Плюнуть в бургер', blank=True
+    )
 
     def __str__(self):
         return f'Заказ {self.id}'
