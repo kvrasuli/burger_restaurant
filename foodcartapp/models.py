@@ -84,6 +84,11 @@ class Order(models.Model):
         'Статус', max_length=11, default='In progress',
         choices=STATUS_CHOICES,
     )
+    PAYMENT_CHOICES = [('Cash', 'Наличными'), ('By card', 'Картой')]
+    payment_method = models.CharField(
+        'Способ оплаты', max_length=11, default='Cash',
+        choices=PAYMENT_CHOICES,
+    )
     comment = models.TextField(
         'Комментарий', help_text='Плюнуть в бургер', blank=True
     )
