@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.shortcuts import reverse
+from django.shortcuts import reverse, redirect
 
 from .models import Restaurant, Product, RestaurantMenuItem, ProductCategory, Order, OrderItem
 
@@ -117,3 +117,9 @@ class OrderAdmin(admin.ModelAdmin):
     def _total_cost(self, obj):
         return f'{obj.get_total_cost()} руб.'
     _total_cost.short_description = 'Сумма заказа'
+
+    def response_change(self, request, obj):
+        response = super().response_change(request, obj)
+        if 'next' in request.GET:
+            return redirect(request.GET['next'])
+        return response
