@@ -110,7 +110,10 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', '_total_cost', 'firstname', 'lastname', 'address', 'phonenumber']
+    list_display = [
+        'id', 'status', '_total_cost', 'firstname',
+        'lastname', 'address', 'phonenumber'
+    ]
     inlines = [OrderItemInline]
     ordering = ['id']
 

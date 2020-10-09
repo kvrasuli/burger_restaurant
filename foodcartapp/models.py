@@ -78,6 +78,11 @@ class Order(models.Model):
     address = models.TextField(
         'Адрес', help_text='ул.Пушкина, д. Колотушкина'
     )
+    STATUS_CHOICES = [('Done', 'Выполнен'), ('In progress', 'В работе')]
+    status = models.CharField(
+        'Статус', max_length=11, default='In progress',
+        choices=STATUS_CHOICES,
+    )
 
     def __str__(self):
         return f'Заказ {self.id}'
