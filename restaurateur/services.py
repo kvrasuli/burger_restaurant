@@ -1,7 +1,8 @@
 from foodcartapp.models import RestaurantMenuItem
 import requests
 from geopy import distance
-from StarBurger.settings import YANDEX_GEO_API_KEY
+from django.conf import settings
+from django.core.cache import cache
 
 
 def get_restaurants(order):
@@ -33,11 +34,9 @@ def fetch_coordinates(apikey, place):
 
 def get_distance(restaurant_address, order_address):
     try:
-        restaurants_coords = fetch_coordinates(
-            YANDEX_GEO_API_KEY, restaurant_address
-        )
+        restaurants_coords = get_coordinates(restaurant_address)
         order_coords = fetch_coordinates(
-            YANDEX_GEO_API_KEY, order_address
+            settings.YANDEX_GEO_API_KEY, order_address
         )
     except requests.exceptions.HTTPError:
         pass
@@ -45,3 +44,13 @@ def get_distance(restaurant_address, order_address):
         (restaurants_coords[1], restaurants_coords[0]),
         (order_coords[1], order_coords[0]),
     ).km
+
+
+def get_coordinates(address):
+    coordinates = cache.get(address)
+    if coordinates:
+        return coordinates
+    else:
+        coordinates = fetch_coordinates(settings.YANDEX_GEO_API_KEY, address)
+        cache.set(address, coordinates, timeout=600)
+        return coordinates
