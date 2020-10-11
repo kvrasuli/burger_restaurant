@@ -1,5 +1,6 @@
 {% extends 'base_restaurateur_page.html' %}
 
+{% load dict_tags %}
 {% block title %}Необработанные заказы | Star Burger{% endblock %}
 
 {% block content %}
@@ -40,7 +41,7 @@
             <summary>Развернуть</summary>
             <ul>
               {% for restaurant in order.restaurants %}
-                <li>{{ restaurant }}</li>
+                <li>{{ restaurant }} - {{ order.restaurants|get_item:restaurant }} км.</li>
               {% endfor %}
             </ul>
           </details>
