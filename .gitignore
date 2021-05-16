@@ -6,3 +6,4 @@ media/
 env/
 .env
 __pycache__/
+.vscode
