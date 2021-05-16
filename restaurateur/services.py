@@ -48,9 +48,7 @@ def get_distance(restaurant_address, order_address):
 
 def get_coordinates(address):
     coordinates = cache.get(address)
-    if coordinates:
-        return coordinates
-    else:
+    if not coordinates:
         coordinates = fetch_coordinates(settings.YANDEX_GEO_API_KEY, address)
         cache.set(address, coordinates, timeout=600)
-        return coordinates
+    return coordinates
