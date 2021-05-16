@@ -77,24 +77,25 @@ class Order(models.Model):
         help_text='8 800 555 35 35'
     )
     address = models.TextField(
-        'Адрес', help_text='ул.Пушкина, д. Колотушкина'
+        'Адрес', help_text='ул.Пушкина, д. Колотушкина', db_index=True
     )
     STATUS_CHOICES = [('Done', 'Выполнен'), ('In progress', 'В работе')]
     status = models.CharField(
         'Статус', max_length=11, default='In progress',
-        choices=STATUS_CHOICES,
+        choices=STATUS_CHOICES, db_index=True
     )
     PAYMENT_CHOICES = [('Cash', 'Наличными'), ('By card', 'Картой')]
     payment_method = models.CharField(
         'Способ оплаты', max_length=11, default='Cash',
-        choices=PAYMENT_CHOICES,
+        choices=PAYMENT_CHOICES, db_index=True
     )
     comment = models.TextField(
-        'Комментарий', help_text='Плюнуть в бургер', blank=True
+        'Комментарий', help_text='Плюнуть в бургер', blank=True,
+        db_index=True
     )
-    created_at = models.DateTimeField(default=timezone.now)
-    called_at = models.DateTimeField(null=True, blank=True)
-    delivered_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
+    called_at = models.DateTimeField(null=True, blank=True, db_index=True)
+    delivered_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     def __str__(self):
         return f'Заказ {self.id}'
