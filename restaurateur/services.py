@@ -3,6 +3,7 @@ import requests
 from geopy import distance
 from django.conf import settings
 from django.core.cache import cache
+from contextlib import suppress
 
 
 def get_restaurants(order):
@@ -33,13 +34,11 @@ def fetch_coordinates(apikey, place):
 
 
 def get_distance(restaurant_address, order_address):
-    try:
+    with suppress(requests.exceptions.HTTPError):
         restaurants_coords = get_coordinates(restaurant_address)
         order_coords = fetch_coordinates(
             settings.YANDEX_GEO_API_KEY, order_address
         )
-    except requests.exceptions.HTTPError:
-        pass
     return distance.distance(
         (restaurants_coords[1], restaurants_coords[0]),
         (order_coords[1], order_coords[0]),
