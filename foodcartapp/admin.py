@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.shortcuts import reverse, redirect
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.conf import settings
 
 from .models import Restaurant, Product, RestaurantMenuItem, ProductCategory, Order, OrderItem
 
@@ -124,5 +126,6 @@ class OrderAdmin(admin.ModelAdmin):
     def response_change(self, request, obj):
         response = super().response_change(request, obj)
         if 'next' in request.GET:
-            return redirect(request.GET['next'])
+            if url_has_allowed_host_and_scheme(request.GET['next'], settings.ALLOWED_HOSTS):
+                return redirect(request.GET['next'])
         return response
