@@ -124,15 +124,11 @@ class OrderItem(models.Model):
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
     cost = models.DecimalField(
-        'Стоимость', max_digits=8, decimal_places=2,
+        'Стоимость', max_digits=8, decimal_places=2, null=True
     )
 
     def get_order_item_cost(self):
         return self.quantity * self.product.price
-
-    def save(self, *args, **kwargs):
-        self.cost = self.get_order_item_cost()
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.product.name} в заказе {self.order.id}'

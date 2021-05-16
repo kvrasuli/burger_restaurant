@@ -119,6 +119,12 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     ordering = ['id']
 
+    def save_model(self, request, obj, form, change):
+        for order_item in obj.items.all():    
+            order_item.cost = order_item.get_order_item_cost()
+            order_item.save()
+        super().save_model(request, obj, form, change)
+
     def _total_cost(self, obj):
         return f'{obj.get_total_cost()} руб.'
     _total_cost.short_description = 'Сумма заказа'
