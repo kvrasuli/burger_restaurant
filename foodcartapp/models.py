@@ -126,11 +126,11 @@ class OrderItem(models.Model):
         'Стоимость', max_digits=8, decimal_places=2,
     )
 
-    def get_cost(self):
+    def get_order_item_cost(self):
         return self.quantity * self.product.price
 
     def save(self, *args, **kwargs):
-        self.cost = self.get_cost()
+        self.cost = self.get_order_item_cost()
         super().save(*args, **kwargs)
 
     def __str__(self):
