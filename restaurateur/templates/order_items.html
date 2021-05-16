@@ -40,9 +40,13 @@
           <details>
             <summary>Развернуть</summary>
             <ul>
-              {% for restaurant in order.restaurants %}
-                <li>{{ restaurant }} - {{ order.restaurants|get_item:restaurant }} км.</li>
-              {% endfor %}
+              {% if order.restaurants %}
+                {% for restaurant in order.restaurants %}
+                    <li>{{ restaurant }} - {{ order.restaurants|get_item:restaurant }} км.</li>
+                {% endfor %}
+              {% else %}
+                <li>Подходящих ресторанов нет!</li>
+              {% endif %}
             </ul>
           </details>
         </td>
