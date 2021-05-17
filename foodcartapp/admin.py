@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.shortcuts import reverse, redirect
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.conf import settings
+from django.db import models
 
 from .models import Restaurant, Product, RestaurantMenuItem, ProductCategory, Order, OrderItem
 
@@ -126,7 +127,7 @@ class OrderAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
 
     def _total_cost(self, obj):
-        return f'{obj.get_total_cost()} руб.'
+        return f"{obj.items.aggregate(models.Sum('cost'))['cost__sum']} руб."
     _total_cost.short_description = 'Сумма заказа'
 
     def response_change(self, request, obj):

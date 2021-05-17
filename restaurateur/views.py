@@ -96,7 +96,7 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.all()
+    orders = Order.objects.get_total_cost()
     orders_on_page = []
     for order in orders:
         restaurants = {
@@ -108,7 +108,7 @@ def view_orders(request):
             'id': order.id,
             'status': order.get_status_display(),
             'payment_method': order.get_payment_method_display(),
-            'total_cost': order.get_total_cost(),
+            'total_cost': order.total_cost,
             'name': f'{order.firstname} {order.lastname}',
             'phonenumber': order.phonenumber,
             'address': order.address,

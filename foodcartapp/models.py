@@ -69,6 +69,11 @@ class RestaurantMenuItem(models.Model):
         ]
 
 
+class OrderQuerySet(models.QuerySet):  
+    def get_total_cost(self):
+        return self.annotate(total_cost=models.Sum('items__cost'))
+
+
 class Order(models.Model):
     firstname = models.CharField('Имя', max_length=50, db_index=True)
     lastname = models.CharField('Фамилия', max_length=50, db_index=True)
@@ -100,8 +105,7 @@ class Order(models.Model):
     def __str__(self):
         return f'Заказ {self.id}'
 
-    def get_total_cost(self):
-        return self.items.aggregate(models.Sum('cost'))['cost__sum']
+    objects = OrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'заказ'
