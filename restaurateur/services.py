@@ -34,9 +34,7 @@ def fetch_coordinates(apikey, place):
 def get_distance(restaurant_address, order_address):
     with suppress(requests.exceptions.HTTPError):
         restaurants_coords = get_coordinates(restaurant_address)
-        order_coords = fetch_coordinates(
-            settings.YANDEX_GEO_API_KEY, order_address
-        )
+        order_coords = get_coordinates(order_address)
     return distance.distance(
         (restaurants_coords[1], restaurants_coords[0]),
         (order_coords[1], order_coords[0]),
