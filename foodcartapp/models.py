@@ -128,7 +128,7 @@ class OrderItem(models.Model):
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
     cost = models.DecimalField(
-        'Стоимость', max_digits=8, decimal_places=2, null=True
+        'Стоимость', max_digits=8, decimal_places=2
     )
 
     def get_order_item_cost(self):

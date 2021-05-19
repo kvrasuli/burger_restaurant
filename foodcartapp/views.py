@@ -72,13 +72,12 @@ def register_order(request):
         address=serializer.validated_data['address']
     )
     for order_item in serializer.validated_data['products']:
-        created_item = OrderItem.objects.create(
+        OrderItem.objects.create(
             order=order,
             product=order_item['product'],
-            quantity=order_item['quantity']
+            quantity=order_item['quantity'],
+            cost=order_item['quantity']*order_item['product'].price,
         )
-        created_item.cost=created_item.get_order_item_cost()
-        created_item.save()
 
     serializer = OrderSerializer(order)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
