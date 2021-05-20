@@ -1,4 +1,4 @@
-from foodcartapp.models import RestaurantMenuItem
+from foodcartapp.models import RestaurantMenuItem, OrderItem
 import requests
 from geopy import distance
 from django.conf import settings
@@ -6,18 +6,25 @@ from django.core.cache import cache
 from contextlib import suppress
 
 
-def get_restaurants(order):
-    restaurants_for_order = []
-    for order_item in order.items.prefetch_related('product'):
-        restauraunts_for_item = set()
-        menu_items = RestaurantMenuItem.objects.filter(
-            product=order_item.product
-        ).prefetch_related('restaurant')
+def get_restaurants_for_orders(orders):
+    menu_items = RestaurantMenuItem.objects.prefetch_related('product').prefetch_related('restaurant') 
+    order_items = OrderItem.objects.prefetch_related('product').prefetch_related('order')
+    restaurants_for_all_order_items = dict()
+    for order_item in order_items:
+        restaurants_for_order_item = set()
         for menu_item in menu_items:
-            restauraunts_for_item.add(menu_item.restaurant)
-        restaurants_for_order.append(restauraunts_for_item)
-    return set.intersection(*restaurants_for_order)
+            if order_item.product == menu_item.product:
+                restaurants_for_order_item.add(menu_item.restaurant)
+        restaurants_for_all_order_items[order_item] = restaurants_for_order_item
 
+    restaurants_for_all_orders = dict()
+    for order in orders:
+        restaurants_for_order = []
+        for order_item in restaurants_for_all_order_items:
+            if order == order_item.order:
+                restaurants_for_order.append(restaurants_for_all_order_items[order_item])
+        restaurants_for_all_orders[order] = set.intersection(*restaurants_for_order)
+    return restaurants_for_all_orders
 
 
 def fetch_coordinates(apikey, place):
