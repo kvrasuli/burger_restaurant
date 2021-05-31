@@ -42,7 +42,7 @@ def product_list_api(request):
             'name': product.name,
             'price': product.price,
             'special_status': product.special_status,
-            'ingridients': product.ingridients,
+            'description': product.description,
             'category': {
                 'id': product.category.id,
                 'name': product.category.name,

@@ -24,6 +24,11 @@
 git clone https://github.com/devmanorg/star-burger.git
 ```
 
+Перейдите в каталог проекта:
+```sh
+cd star-burger
+```
+
 [Установите Python](https://www.python.org/), если этого ещё не сделали.
 
 Проверьте, что `python` установлен и корректно настроен. Запустите его в командной строке:
@@ -42,11 +47,6 @@ python -m venv venv
 - Windows: `.\venv\Scripts\activate`
 - MacOS/Linux: `source venv/bin/activate`
 
-Перейдите в каталог проекта:
-
-```sh
-cd star-burger
-```
 
 Установите зависимости в виртуальное окружение:
 ```sh
@@ -78,11 +78,15 @@ python manage.py runserver
 ```sh
 nodejs --version
 # v12.18.2
+# Если ошибка, попробуйте node:
+node --version
+# v12.18.2
+
 npm --version
 # 6.14.5
 ```
 
-Версия `nodejs` должна быть не младше 10.0. Версия `npm` не важна.
+Версия `nodejs` должна быть не младше 10.0. Версия `npm` не важна. Как обновить Node.js читайте в статье: [How to Update Node.js](https://phoenixnap.com/kb/update-node-js-version).
 
 Установите необходимые пакеты. В каталоге проекта запустите:
 
@@ -93,21 +97,20 @@ npm install --dev
 Установите [Parcel](https://parceljs.org/). Это упаковщик веб-приложений. Он похож на [Webpack](https://webpack.js.org/), но совсем не требует настроек:
 
 ```sh
-npm install -g parcel-bundler  # понадобятся права администратора `sudo`
+npm install -g parcel@latest  # понадобятся права администратора `sudo`
 ```
 
-Проверьте, что `parcel` установлен. Запустите его в командной строке:
+Вам нужна вторая версия Parcel. Проверьте, что `parcel` установлен и его версию в командной строке:
 
 ```sh
-parcel --version
+$ parcel --version
+2.0.0-beta.2
 ```
-
-Сама версия не важна. Главное — это чтобы `parcel` "завёлся".
 
 Почти всё готово. Теперь запустите сборку фронтенда и не выключайте. Parcel будет работать в фоне и следить за изменениями в JS-коде:
 
 ```sh
-parcel watch bundles-src/index.js -d bundles --public-url="./"
+parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
 ```
 
 Дождитесь завершения первичной сборки. Это вполне может занять 10 и более секунд. О готовности вы узнаете по сообщению в консоли:
@@ -132,8 +135,14 @@ Parcel будет следить за файлами в каталоге `bundle
 Собрать фронтенд:
 
 ```sh
-parcel build bundles-src/index.js -d bundles --public-url="./"
+parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 ```
+
+Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
+
+- `DEBUG` — дебаг-режим. Поставьте `False`.
+- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
+- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 
 ## Цели проекта
 

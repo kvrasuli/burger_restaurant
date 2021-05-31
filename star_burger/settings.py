@@ -1,10 +1,11 @@
 import os
-import environ
 import dj_database_url
 
+from environs import Env
 
-env = environ.Env()
-environ.Env.read_env()
+
+env = Env()
+env.read_env()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -17,7 +18,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=True)
 YANDEX_GEO_API_KEY = env.str('YANDEX_GEO_API_KEY')
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', ['127.0.0.1', 'localhost'])
 
 INSTALLED_APPS = [
     'foodcartapp.apps.FoodcartappConfig',
@@ -58,7 +59,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-ROOT_URLCONF = 'StarBurger.urls'
+ROOT_URLCONF = 'star_burger.urls'
 
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -93,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'StarBurger.wsgi.application'
+WSGI_APPLICATION = 'star_burger.wsgi.application'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
